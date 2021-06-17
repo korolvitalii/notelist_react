@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import _ from 'lodash';
 
 const text = (state = '', action) => {     
   switch (action.type) {
@@ -14,7 +13,7 @@ const text = (state = '', action) => {
   }
 };
 
-const tasks = (state = [], action) => {
+const tasks = (state = []  , action) => {
   switch (action.type) {
     case 'TASK_ADD': {
       return [action.payload.task, ...state];
