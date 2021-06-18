@@ -1,25 +1,53 @@
 import { combineReducers } from 'redux';
+// import { reducer as formReducer } from 'redux-form';
 
-const text = (state = '', action) => {     
+const notes = (state = [], action) => {
   switch (action.type) {
-    case 'TEXT_UPDATE': {
-      return action.payload.text;
+    case 'NOTE_ADD': {
+      return [action.payload.note, ...state];
     }
-    case 'TASK_ADD': {
-      return '';
+    case 'NOTE_REMOVE': {
+      return state.filter((t) => t.id !== action.payload.id);
+    }
+    case 'NOTE_ADD_ARCHIVE': {
+      return state.filter((t) => t.id !== action.payload.archiveNote.id);
+    
     }
     default:
       return state;
   }
 };
 
-const tasks = (state = []  , action) => {
+const archive  = (state = [], action) => {
   switch (action.type) {
-    case 'TASK_ADD': {
-      return [action.payload.task, ...state];
+    case 'NOTE_ADD_ARCHIVE': {
+      return [ action.payload.archiveNote, ...state ];
     }
-    case 'TASK_REMOVE': {
-      return state.filter((t) => t.id !== action.payload.id);
+    default:
+      return state;
+  }
+};
+
+const categories = (state = [], action) => {
+  switch (action.type) {
+    case 'NOTE_REMOVE': {
+      return state;
+    }
+    case 'NOTE_ADD_ARCHIVE': {
+      return state;
+    }
+    default:
+      return state;
+  }
+};
+
+const formState = (state = false, action) => {
+  switch (action.type) {
+    case 'FORM_OPEN': {
+      return !action.payload.formState;
+    }
+    case 'FORM_CLOSE': {
+      return action.payload.formState;
     }
     default:
       return state;
@@ -27,6 +55,9 @@ const tasks = (state = []  , action) => {
 };
 
 export default combineReducers({
-  text,
-  tasks,
+  notes,
+  archive,
+  categories,
+  formState,
+  // form: formReducer,
 });
