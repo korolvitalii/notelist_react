@@ -1,18 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 // import _ from 'lodash';
-import { archiveNotes, removeNotes, toggleForm } from '../actions/index.js';
-// import Form from './Form';
-import  { counterCategoriesType } from '../helpers/index.js';
+import { addNote, archiveNotes, removeNotes, toggleForm, addDefaultNote } from '../actions/index.js';
+import { useForm } from "react-hook-form";
+import  { counterCategoriesType, generateDate, currentNote,  } from '../helpers/index.js';
 import 'font-awesome/css/font-awesome.min.css';
 
-const mapStateToProps = ({ notes, archive, categories, formState, form }) => {
+const mapStateToProps = ({ notes, archive, categories, formState, form, defaultValues }) => {
     const props = { 
       notes,
       archive,
       categories,
       formState,
       form,
+      defaultValues,
     };
     return props;
   };
@@ -35,7 +36,7 @@ const mapStateToProps = ({ notes, archive, categories, formState, form }) => {
     )
   };
 
-  const TableBodyNotesBox = ({ notes, handleArchivateTask, handleRemoveNote }) => {
+  const TableBodyNotesBox = ({ notes, handleArchivateTask, handleRemoveNote, handleFormAddNewNote  }) => {
     if (notes.length === 0) {
       return null;
     }
@@ -51,7 +52,7 @@ const mapStateToProps = ({ notes, archive, categories, formState, form }) => {
         <td>{content}</td>
         <td>{dates}</td>
         <th scope="col" className="w-25 p-3 text-right">
-        <i className="p-1 bi bi-pencil"></i>        
+        <i className="p-1 bi bi-pencil" onClick={handleFormAddNewNote(id)}></i>        
         <i className="p-1 bi bi-archive" onClick={handleArchivateTask(note)}></i>
         <i className="p-1 bi bi-trash" onClick={handleRemoveNote(id)}></i>
       </th>
@@ -94,9 +95,40 @@ const mapStateToProps = ({ notes, archive, categories, formState, form }) => {
       </tbody>
     )
   };
- 
+
+  const Form = ({ handleFormAddNewNote, defaultValues }) => {
+    const { register, handleSubmit } = useForm({
+      defaultValues: defaultValues
+    });
+
+    return (
+      <form onSubmit={handleSubmit(handleFormAddNewNote)}>
+        <div className="form-row">
+          <div className="form-group col-md-3">
+            <label htmlFor="name">Name</label>
+            <input type="text" className="form-control" placeholder="Name" {...register("name")} />
+          </div>
+
+          <div className="form-group col-md-3">
+            <label htmlFor="category">Category</label>
+            <input type="text" className="form-control" placeholder="Category" {...register("category")}/>
+          </div>
+          <div className="form-group col-md-3">
+            <label htmlFor="dates">Dates</label>
+            <input type="text" className="form-control"  placeholder="Dates" {...register("dates")}/>
+          </div>
+          <div className="form-group col-md-6">
+            <label htmlFor="content">Content</label>
+            <textarea className="form-control" rows="3"{...register("content")}></textarea>
+          </div>
+        </div>
+        <button type="submit" className="btn btn-primary p-2 m-2">Add Note</button>
+      </form>
+    )
+  };
+
   const App = (state) => {
-    const { dispatch, notes, archive, categories, formState } = state;
+    const { dispatch, notes, archive, categories, formState, defaultValues } = state;
     // console.log(state);
 
     const handleArchivateTask = (note) => () => {
@@ -111,22 +143,29 @@ const mapStateToProps = ({ notes, archive, categories, formState, form }) => {
       dispatch(toggleForm(formState));
     };
 
-    const handleForm = (e) => {
-      e.preventDefault();
-      const { target } = e;
-      const formData = new FormData(target);
+    const handleFormAddNewNote = (id)  => (data) => {
+      if (id) {
+        const current = currentNote(notes, id);
+        dispatch(addDefaultNote(current));
+        dispatch(toggleForm(formState));
+        console.log(state);
 
-      dispatch(toggleForm(formState));
+      } else {
+        const currentDate = generateDate();
+        data.created = currentDate;
+        dispatch(toggleForm(formState));
+        dispatch(addNote(data));
+      }
     };
 
     return (
       <div>
         <table className="table">
         <TableHead state={state}/>
-        <TableBodyNotesBox notes={notes} handleArchivateTask={handleArchivateTask} handleRemoveNote={handleRemoveNote}/>
+        <TableBodyNotesBox notes={notes} handleArchivateTask={handleArchivateTask} handleRemoveNote={handleRemoveNote} handleFormAddNewNote={handleFormAddNewNote}/>
       </table>
       {!formState && <ButtonAddNewTask handleAddNewNote={handleAddNewNote}/>}
-      {/* {formState && <Form handleForm={handleForm}/>} */}
+      {formState && <Form handleFormAddNewNote={handleFormAddNewNote()} defaultValues={defaultValues} />}
       <table className="table">
         <TableHeadSumCountCategories/>
         <TableBodySumCountCategories categories={categories} notes={notes} archive={archive}/>

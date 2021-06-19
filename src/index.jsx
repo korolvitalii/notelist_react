@@ -5,7 +5,6 @@ import { createStore } from 'redux';
 import reducers from './reducers/index.js';
 import App from './components/App.jsx';
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { reduxForm } from 'redux-form';
 
 const initialState = { 
   notes: [

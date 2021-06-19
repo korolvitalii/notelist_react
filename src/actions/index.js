@@ -5,10 +5,10 @@ export const updateNewTaskText = (text) => ({
   },
 });
 
-export const addTask = (task) => ({
-  type: 'TASK_ADD',
+export const addNote= (note) => ({
+  type: 'NOTE_ADD',
   payload: {
-    task,
+    note,
   },
 });
 
@@ -33,3 +33,9 @@ export const toggleForm = (formState) => ({
   },
 });
 
+export const addDefaultNote = (currentNote) => ({
+  type: 'NOTE_EDIT',
+  payload: {
+    currentNote,
+  },
+});
