@@ -12,10 +12,10 @@ export const addNote= (note) => ({
   },
 });
 
-export const removeNotes = (id) => ({
+export const removeNotes = (note) => ({
   type: 'NOTE_REMOVE',
   payload: {
-    id,
+    note,
   },
 });
 
@@ -38,4 +38,18 @@ export const addDefaultNote = (currentNote) => ({
   payload: {
     currentNote,
   },
+});
+
+export const unarchiveNote = (unarciveNote) => ({
+  type: 'NOTE_UNARCHIVE',
+  payload: {
+    unarciveNote,
+  },
+});
+
+export const getUniqueCategories = (notes) => ({
+  type: 'NOTE_CATEGORY', 
+  payload: {
+    notes,
+  }
 });
