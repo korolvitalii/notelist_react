@@ -5,7 +5,7 @@ export const updateNewTaskText = (text) => ({
   },
 });
 
-export const addNote= (note) => ({
+export const addNote = (note) => ({
   type: 'NOTE_ADD',
   payload: {
     note,
@@ -48,8 +48,8 @@ export const unarchiveNote = (unarciveNote) => ({
 });
 
 export const getUniqueCategories = (notes) => ({
-  type: 'NOTE_CATEGORY', 
+  type: 'NOTE_CATEGORY',
   payload: {
     notes,
-  }
+  },
 });

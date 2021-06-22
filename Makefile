@@ -1,2 +1,2 @@
-lint
-  npm eslint .
+lint:
+	npx eslint . --ext js,jsx
