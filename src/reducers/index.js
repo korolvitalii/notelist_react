@@ -36,7 +36,6 @@ const archive = (state = [], action) => {
 };
 
 const categories = (state = [], action) => {
-  console.log(state);
   switch (action.type) {
     case 'NOTE_CATEGORY': {
       return action.payload.notes
